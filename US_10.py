@@ -97,3 +97,31 @@ def register(app, session):
         except Exception as e:
             session.rollback()
             return jsonify({'error': str(e)}), 500
+        
+    @app.route('/api/observations/<int:obs_id>', methods=['PUT'])
+    def update_obs(obs_id):
+        obs = session.query(ObservationRecord).get(obs_id)
+        if not obs: 
+            return jsonify({'error': 'Not found'}), 404
+        
+        # --- US-11: Historical Integrity Check ---
+        now = datetime.now()
+        # Find the first day of the current quarter
+        quarter_start_month = ((now.month - 1) // 3) * 3 + 1
+        current_quarter_start = datetime(now.year, quarter_start_month, 1)
+
+        # If the observation was created before this quarter, return 403
+        if obs.timestamp < current_quarter_start:
+            return jsonify({
+                'error': 'Historical Integrity Violation',
+                'message': 'Records from previous quarters cannot be modified.'
+            }), 403
+        # ------------------------------------------
+
+        data = request.get_json()
+        for key, value in data.items():
+            if hasattr(obs, key):
+                setattr(obs, key, value)
+        
+        session.commit()
+        return jsonify({'message': 'Updated'}), 200
