@@ -1,15 +1,17 @@
-from flask import Flask, jsonify
+"""
+US-05: Basic API Health Endpoints
+"""
+from flask import jsonify
 
-app = Flask(__name__)
+def register(app, session):
+    """
+    Registers the basic health routes for US-05.
+    """
+    
+    @app.route('/')
+    def index():
+        return "API is running"
 
-@app.route('/')
-def index():
-    return "API is running"
-
-# ADD THIS SECTION TO MEET TRELLO REQUIREMENTS
-@app.route('/health')
-def health():
-    return jsonify({"status": "ok"})
-
-if __name__ == '__main__':
-    app.run(debug=True)
+    @app.route('/health')
+    def health():
+        return jsonify({"status": "ok"})
