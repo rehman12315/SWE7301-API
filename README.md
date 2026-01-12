@@ -25,8 +25,9 @@ This repository contains the backend infrastructure and functional modules for m
 * **US-24: Test-Driven Development** — 📅 Sprint Backlog
 
 ### 📝 Toluwalope Otegbeye
-* **Documentation & Reporting** — 📅 Sprint Backlog
-
+* **US-07: HTTP Methods** — ✅ Done
+* **US-08: JSON Data Format** — ✅ Done
+* **US-12: Bulk Operations** — ✅ Done
 ---
 
 ## 🏗 Universal Application Architecture
