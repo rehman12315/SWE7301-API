@@ -1,21 +1,20 @@
-"""
-US-06: API Status and Swagger Integration
-"""
-from flask import jsonify
+from flask import Flask, jsonify
+from flasgger import Swagger
+app = Flask(__name__)
+swagger= Swagger(app)
 
-def register(app, session):
-    """
-    Registers the status routes for US-06.
-    """
-    
-    @app.route('/', endpoint='us06_index')
-    def index():
-        return "API is running on swagger"
+@app.route('/')
+def index():
+     
+    return "API is running on swagger"
 
-    @app.route('/status')
-    def status():
-        return jsonify({"message": "System is online"})
-    
-    @app.route('/health')
-    def health():
-        return jsonify({"status": "ok"})
+@app.route('/status')
+def status():
+    return jsonify({"message": "System is online"})
+@app.route('/health')
+def health():
+
+    return jsonify({"status": "ok"})
+
+if __name__ == '__main__':
+    app.run(debug=True)

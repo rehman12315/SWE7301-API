@@ -22,16 +22,15 @@ This repository contains the backend infrastructure and functional modules for m
 - **US-11: Update Observation Data** — ✅ Done
 
 ### 🧪 Amir Tavass
-
-- **US-05: Flask API Framework** — ✅ Done
-- **US-06: API Documentation** — ✅ Done
-- **US-13: JWT Authentication** — ✅ Done
-- **US-24: Test-Driven Development** — ✅ Done
+* **US-05: Flask API Framework** — ✅ Done
+* **US-06: API Documentation** — ✅ Done
+* **US-13: JWT Authentication** — ✅ Done
+* **US-24: Test-Driven Development** — 📅 Sprint Backlog
 
 ### 📝 Toluwalope Otegbeye
-
-- **Documentation & Reporting** — 📅 Sprint Backlog
-
+* **US-07: HTTP Methods** — ✅ Done
+* **US-08: JSON Data Format** — ✅ Done
+* **US-12: Bulk Operations** — ✅ Done
 ---
 
 ## 🏗 Universal Application Architecture
