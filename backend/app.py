@@ -19,11 +19,11 @@ def get_app():
     
     # We create a scoped session for the routes
     session = SessionLocal()
-    import backendApi.app.routes.observationApi as observationApi
-    import backendApi.app.routes.filtering as filtering
-    # import backendApi.app.auth.US_06 as US_06
-    import backendApi.app.routes.US_11 as US_11
-    import backendApi.app.models.jwtAuth as jwtAuth
+    import backend.app.routes.observationApi as observationApi
+    import backend.app.routes.filtering as filtering
+    # import backend.app.auth.US_06 as US_06
+    import backend.app.routes.US_11 as US_11
+    import backend.app.models.jwtAuth as jwtAuth
     
     # Registration is critical for the routes to exist
     observationApi.register(app, session)
