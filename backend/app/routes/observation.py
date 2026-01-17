@@ -59,21 +59,14 @@ def register(app):
     def update_obs(obs_id):
         db = get_db()
         obs = db.get(ObservationRecord, obs_id)
+        
         if not obs:
             return jsonify({"error": "Not found"}), 404
 
-        # Prevent editing records from previous quarters
-        now = datetime.now(timezone.utc)
-        q_start_month = ((now.month - 1) // 3) * 3 + 1
-        current_q_start = datetime(now.year, q_start_month, 1, tzinfo=timezone.utc)
-
-        if obs.timestamp < current_q_start:
-            return jsonify({
-                "error": "Historical Integrity Violation",
-                "message": "Cannot modify records from previous quarters."
-            }), 403
-
+        # US-11 logic (Quarterly Lock) removed as per descoping
         data = request.get_json() or {}
+        
+        # Update fields dynamically
         for key, value in data.items():
             if hasattr(obs, key):
                 setattr(obs, key, value)
