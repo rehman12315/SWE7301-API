@@ -9,6 +9,9 @@ def get_app():
     app.config["JWT_SECRET_KEY"] = "super-secret-key-change-me"
     JWTManager(app)
 
+    # Import models to ensure they are registered with SQLAlchemy
+    from app.routes.observation import ObservationRecord
+
     # Initialize DB
     Base.metadata.create_all(bind=engine)
 
@@ -25,6 +28,7 @@ def get_app():
     jwtAuth.register(app, session)
 
     return app
+
 
 
 if __name__ == "__main__":
