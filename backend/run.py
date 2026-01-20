@@ -11,10 +11,23 @@ def get_app():
     JWTManager(app)
 
     # Import models to register with SQLAlchemy
-    from app.routes.observation import ObservationRecord
+    from app.routes.observation import ObservationRecord, Product, Subscription
 
     # Initialize DB tables
     Base.metadata.create_all(bind=engine)
+
+    # Seed initial products if none exist
+    db = SessionLocal()
+    if db.query(Product).count() == 0:
+        products = [
+            Product(name="Crop Health Monitoring", description="High-res spectral analysis for agriculture.", price="$499/mo"),
+            Product(name="Wildfire Risk Assessment", description="Real-time thermal imaging and risk modeling.", price="$799/mo"),
+            Product(name="Urban Expansion Tracking", description="Monthly change detection for city planning.", price="$299/mo"),
+            Product(name="Deforestation Alert System", description="Instant notification of illegal logging activities.", price="$599/mo")
+        ]
+        db.add_all(products)
+        db.commit()
+    db.close()
 
     # Create a per-request session
     @app.before_request
