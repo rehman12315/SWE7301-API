@@ -3,6 +3,38 @@ from datetime import datetime, timezone
 from sqlalchemy import Column, String, DateTime, Integer, Text
 from app.db import Base
 
+class Product(Base):
+    __tablename__ = "products"
+    
+    id = Column(Integer, primary_key=True)
+    name = Column(String(255), nullable=False)
+    description = Column(Text)
+    price = Column(String(50))
+    
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "description": self.description,
+            "price": self.price
+        }
+
+class Subscription(Base):
+    __tablename__ = "subscriptions"
+    
+    id = Column(Integer, primary_key=True)
+    user_id = Column(String(100), nullable=False)
+    product_id = Column(Integer, nullable=False)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "product_id": self.product_id,
+            "created_at": self.created_at.isoformat() if self.created_at else None
+        }
+
 class ObservationRecord(Base):
     __tablename__ = "observations"
 
