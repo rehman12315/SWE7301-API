@@ -113,6 +113,38 @@ def dashboard(request):
     })
 
 
+def subscriptions(request):
+    """Subscriptions view protected by session token"""
+    access_token = request.session.get("access_token")
+    if not access_token:
+        return redirect("login")
+    
+    username = request.session.get("username", "User")
+    
+    products = []
+    subscriptions = []
+    headers = {"Authorization": f"Bearer {access_token}"}
+    
+    try:
+        # Fetch products
+        prod_res = requests.get(f"{BACKEND_URL}/api/products", headers=headers)
+        if prod_res.status_code == 200:
+            products = prod_res.json()
+        
+        # Fetch user's subscriptions
+        sub_res = requests.get(f"{BACKEND_URL}/api/subscriptions", params={"username": username}, headers=headers)
+        if sub_res.status_code == 200:
+            subscriptions = sub_res.json()
+    except Exception as e:
+        print(f"Error fetching subscription data: {e}")
+
+    return render(request, "subscriptions.html", {
+        "username": username,
+        "products": products,
+        "subscriptions": subscriptions
+    })
+
+
 def subscribe(request, product_id):
     """Handle product subscription"""
     access_token = request.session.get("access_token")

@@ -19,6 +19,24 @@ USERS = {
         "email": "admin@geoscope.com",
         "first_name": "Admin",
         "last_name": "User"
+    },
+    "full_user": {
+        "password": "password",
+        "email": "full@geoscope.com",
+        "first_name": "Full",
+        "last_name": "Access"
+    },
+    "none_user": {
+        "password": "password",
+        "email": "none@geoscope.com",
+        "first_name": "No",
+        "last_name": "Access"
+    },
+    "partial_user": {
+        "password": "password",
+        "email": "partial@geoscope.com",
+        "first_name": "Partial",
+        "last_name": "Access"
     }
 }
 
