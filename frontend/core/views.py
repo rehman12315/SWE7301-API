@@ -34,9 +34,14 @@ def login_view(request):
             if response.status_code == 200:
                 data = response.json()
                 access_token = data.get("access_token")
-                # Store token in session
+                refresh_token = data.get("refresh_token")
+                user_info = data.get("user", {})
+                
+                # Store tokens and user info in session
                 request.session["access_token"] = access_token
+                request.session["refresh_token"] = refresh_token
                 request.session["username"] = username
+                request.session["user_info"] = user_info
                 return redirect("dashboard")
             else:
                 error = "Invalid username or password"
@@ -125,4 +130,23 @@ def subscribe(request, product_id):
         print(f"Error subscribing: {e}")
     
     return redirect("dashboard")
+
+
+def update_token_view(request):
+    """Update access token in session - US-16 requirement"""
+    if request.method == "POST":
+        try:
+            import json
+            data = json.loads(request.body)
+            access_token = data.get("access_token")
+            
+            if access_token:
+                request.session["access_token"] = access_token
+                return JsonResponse({"status": "success", "message": "Token updated"})
+            else:
+                return JsonResponse({"status": "error", "message": "No token provided"}, status=400)
+        except Exception as e:
+            return JsonResponse({"status": "error", "message": str(e)}, status=500)
+    
+    return JsonResponse({"status": "error", "message": "Method not allowed"}, status=405)
 

@@ -25,36 +25,6 @@ class ObservationRecord(Base):
             "notes": self.notes,
         }
 
-class Product(Base):
-    __tablename__ = "products"
-    id = Column(Integer, primary_key=True)
-    name = Column(String(100), unique=True, nullable=False)
-    description = Column(Text)
-    price = Column(String(50))
-
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "name": self.name,
-            "description": self.description,
-            "price": self.price
-        }
-
-class Subscription(Base):
-    __tablename__ = "subscriptions"
-    id = Column(Integer, primary_key=True)
-    username = Column(String(100), nullable=False)
-    product_id = Column(Integer, nullable=False)
-    status = Column(String(50), default="active")
-
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "username": self.username,
-            "product_id": self.product_id,
-            "status": self.status
-        }
-
 def get_db():
     """Helper to get the current request's DB session"""
     return g.db
@@ -62,29 +32,6 @@ def get_db():
 def register(app):
     @app.route("/api/observations", methods=["POST"])
     def create_obs():
-        """
-        Create a new observation record
-        ---
-        parameters:
-          - name: body
-            in: body
-            required: true
-            schema:
-              properties:
-                timezone:
-                  type: string
-                coordinates:
-                  type: string
-                satellite_id:
-                  type: string
-                spectral_indices:
-                  type: string
-                notes:
-                  type: string
-        responses:
-          201:
-            description: Observation created successfully
-        """
         db = get_db()
         data = request.get_json() or {}
 
@@ -102,20 +49,6 @@ def register(app):
 
     @app.route("/api/observations/<int:obs_id>", methods=["GET"])
     def get_obs(obs_id):
-        """
-        Get a specific observation record
-        ---
-        parameters:
-          - name: obs_id
-            in: path
-            type: integer
-            required: true
-        responses:
-          200:
-            description: Observation details
-          404:
-            description: Not found
-        """
         db = get_db()
         obs = db.get(ObservationRecord, obs_id)
         if not obs:
@@ -124,27 +57,6 @@ def register(app):
 
     @app.route("/api/observations/<int:obs_id>", methods=["PUT"])
     def update_obs(obs_id):
-        """
-        Update an existing observation record
-        ---
-        parameters:
-          - name: obs_id
-            in: path
-            type: integer
-            required: true
-          - name: body
-            in: body
-            required: true
-            schema:
-              properties:
-                notes:
-                  type: string
-        responses:
-          200:
-            description: Updated successfully
-          404:
-            description: Not found
-        """
         db = get_db()
         obs = db.get(ObservationRecord, obs_id)
         
@@ -161,54 +73,3 @@ def register(app):
 
         db.commit()
         return jsonify({"message": "Updated"}), 200
-
-    @app.route("/api/products", methods=["GET"])
-    def get_products():
-        """
-        Get all available products
-        ---
-        responses:
-          200:
-            description: A list of products
-        """
-        db = get_db()
-        products = db.query(Product).all()
-        return jsonify([p.to_dict() for p in products])
-
-    @app.route("/api/subscriptions", methods=["GET"])
-    def get_subscriptions():
-        """
-        Get user subscriptions
-        ---
-        parameters:
-          - name: username
-            in: query
-            type: string
-            required: false
-        responses:
-          200:
-            description: A list of subscriptions
-        """
-        username = request.args.get("username")
-        db = get_db()
-        if username:
-            subs = db.query(Subscription).filter(Subscription.username == username).all()
-        else:
-            subs = db.query(Subscription).all()
-        return jsonify([s.to_dict() for s in subs])
-
-    @app.route("/api/subscriptions", methods=["POST"])
-    def create_subscription():
-        db = get_db()
-        data = request.get_json() or {}
-        if not data.get("username") or not data.get("product_id"):
-            return jsonify({"error": "Missing username or product_id"}), 400
-        
-        new_sub = Subscription(
-            username=data["username"],
-            product_id=data["product_id"]
-        )
-        db.add(new_sub)
-        db.commit()
-        db.refresh(new_sub)
-        return jsonify(new_sub.to_dict()), 201
